@@ -105,6 +105,41 @@ For a local build, replace `command`/`args` with `"command": "node"`, `"args": [
 codex mcp add notebooklm npx notebooklm-mcp@latest
 ```
 
+### OpenCode — `~/.config/opencode/opencode.json`
+
+Add the server under the `mcp` key:
+
+```json
+{
+  "mcp": {
+    "notebooklm": {
+      "type": "local",
+      "command": ["npx", "notebooklm-mcp@latest"]
+    }
+  }
+}
+```
+
+For account isolation (e.g., work vs personal Google accounts):
+
+```json
+{
+  "mcp": {
+    "notebooklm": {
+      "type": "local",
+      "command": ["npx", "notebooklm-mcp@latest", "--account", "work"],
+      "environment": {
+        "NOTEBOOKLM_PROFILE": "standard"
+      }
+    }
+  }
+}
+```
+
+**Authentication**: after adding the config, ask your agent to "set up auth for NotebookLM". The agent calls `setup_auth`, which opens Chrome for you to log in to your Google account. On headless Linux servers, wrap the command with `xvfb-run -a` for the initial login, then revert to the plain command — subsequent runs go fully headless.
+
+**First notebook**: share a NotebookLM URL with your agent, which calls `add_notebook` to register it in the local library. After that, you can ask questions with `ask_question`.
+
 ### Generic MCP client (stdio)
 
 Any client that can spawn an MCP server over stdio can use the same `npx notebooklm-mcp@latest` invocation. The server speaks MCP 2025 + the SDK's `Server` capability set (`tools`, `resources`, `prompts`, `completions`, `logging`).
